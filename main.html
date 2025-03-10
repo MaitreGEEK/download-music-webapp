@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Music WebApp</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="content">
+    <h1>Download Music WebApp</h1>
+    <textarea id="links" rows="10" cols="50" placeholder="Entrez les liens ou titres ici..."></textarea>
+    <button onclick="sendDownloadRequest()">Télécharger</button>
+
+    <h2>Historique des téléchargements</h2>
+    <div id="songsList"></div>
+
+    <script>
+        async function sendDownloadRequest() {
+            const links = document.getElementById("links").value.split('\n').filter(line => line.trim());
+            const response = await fetch("/downloads", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ searchList: links })
+            });
+            const result = await response.json();
+            displaySongs(result);
+        }
+
+        function displaySongs(result) {
+            const songsList = document.getElementById("songsList");
+            songsList.innerHTML = "";  // Clear previous results
+
+            if (!result.success) {
+                songsList.innerHTML = `<p>Error: ${result.error || 'Unknown error'}</p>`;
+                return;
+            }
+
+            result.songs.forEach(song => {
+                const songElement = document.createElement("div");
+                songElement.classList.add("song");
+
+                const songInfo = document.createElement("div");
+                songInfo.classList.add("song-info");
+
+                const thumbnail = document.createElement("img");
+                thumbnail.src = song.thumbnail;
+                songInfo.appendChild(thumbnail);
+
+                const songDetails = document.createElement("div");
+                const title = document.createElement("div");
+                title.textContent = `Title: ${song.title}`;
+                const duration = document.createElement("div");
+                duration.textContent = `Duration: ${formatDuration(song.duration)}`;
+                songDetails.appendChild(title);
+                songDetails.appendChild(duration);
+
+                songInfo.appendChild(songDetails);
+                songElement.appendChild(songInfo);
+
+                // If the song was successfully downloaded
+                if (song.success) {
+                    const successMessage = document.createElement("p");
+                    successMessage.textContent = "Téléchargement réussi!";
+                    songElement.appendChild(successMessage);
+                } else {
+                    const errorMessage = document.createElement("p");
+                    errorMessage.textContent = "Échec du téléchargement.";
+                    songElement.appendChild(errorMessage);
+
+                    // Retry button
+                    const retryButton = document.createElement("button");
+                    retryButton.classList.add("retry-button");
+                    retryButton.textContent = "Réessayer";
+                    retryButton.onclick = () => retryDownload(song.url);
+                    songElement.appendChild(retryButton);
+                }
+
+                songsList.appendChild(songElement);
+            });
+        }
+
+        async function retryDownload(url) {
+            const response = await fetch("/downloads", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ searchList: [url] })
+            });
+            const result = await response.json();
+            displaySongs(result);
+        }
+
+        // Format duration from seconds to HH:MM:SS
+        function formatDuration(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+
+            return `${hours > 0 ? hours + ":" : ""}${minutes < 10 ? "0" : ""}${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+        }
+    </script>
+    </div>
+</body>
+</html>

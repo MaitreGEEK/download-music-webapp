@@ -1,0 +1,200 @@
+/* Réinitialisation de certains styles de base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+ul {
+    list-style: none;
+    /* Supprime les puces */
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+    /* Évite le dépassement */
+    overflow-x: auto;
+    /* Ajoute un défilement si nécessaire */
+    word-wrap: break-word;
+    /* Coupe les mots longs */
+    max-height: 60%;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+li {
+    white-space: nowrap;
+    /* Empêche les éléments de se casser en plusieurs lignes */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* Ajoute "..." si le texte est trop long */
+}
+
+/* Corps de la page */
+body {
+    font-family: 'Comfortaa', sans-serif;
+    background-color: #050505;
+    color: #fff;
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+/* Conteneur principal */
+#content {
+    background-color: #131313;
+    padding: 20px 15px 20px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 900px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 80%;
+}
+
+/* Titre */
+h1 {
+    font-size: 2rem;
+    color: #fff;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Container pour chaque shard */
+.shard-container {
+    background-color: #202020;
+    padding: 15px 10px 0px 15px;
+    border-radius: 8px;
+    border-left: 10px solid transparent;
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.shard-container.up {
+    border-left-color: #2ecc71;
+    /* Vert pour les shards "up" */
+}
+
+.shard-container.down {
+    border-left-color: #e74c3c;
+    /* Rouge pour les shards "down" */
+}
+
+/* Tête de shard */
+.shard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.shard-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.shard-status {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.shard-status.up {
+    color: #2ecc71;
+    /* Vert pour le statut "up" */
+}
+
+.shard-status.down {
+    color: #e74c3c;
+    /* Rouge pour le statut "down" */
+}
+
+/* Détails supplémentaires */
+.shard-details {
+    font-size: 1.05rem;
+    color: #ddd;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    gap: 10%;
+}
+
+/* Barre de statut en bas */
+.status-bar {
+    height: 10px;
+    margin-top: 15px;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.3);
+    transition: width 0.3s ease;
+}
+
+.status-bar.up {
+    background-color: #2ecc71;
+    /* Vert pour les shards "up" */
+}
+
+.status-bar.down {
+    background-color: #e74c3c;
+    /* Rouge pour les shards "down" */
+}
+
+/* Bouton retry */
+.retry-button {
+    background-color: #f39c12;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.retry-button:hover {
+    background-color: #e67e22;
+}
+
+/* Tooltip au survol des barres */
+.event-tooltip {
+    position: absolute;
+    bottom: 45px;
+    /* Position du tooltip au-dessus de la barre */
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 12px;
+    display: none;
+    white-space: nowrap;
+}
+
+.event-bar:hover .event-tooltip {
+    display: block;
+    /* Affiche le tooltip au survol */
+}
+
+/* Scroll */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 0px;
+    border-radius: 500px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-radius: 100px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #202020;
+    border-radius: 100px;
+}
+
+@media(max-width: 700px) {
+    .shard-details {
+        flex-direction: column;
+    }
+}
