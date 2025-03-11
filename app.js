@@ -1,5 +1,5 @@
 import { serve } from "bun";
-import { downloadSongs, GM_API_URL, GM_TOKEN } from "./functions";
+import { downloadSongs, GM_API_URL, GM_TOKEN, promisifiedError } from "./functions";
 
 const server = serve({
     port: 3000,

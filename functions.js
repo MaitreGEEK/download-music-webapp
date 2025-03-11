@@ -1,5 +1,5 @@
 const GM_TOKEN = "EyRnJOVlpOVm1oV1lUSm9jRlZxU2pSalJsWnhVVzFHYTFa"
-const GM_API_URL = "http://localhost:1300/api/"//https://geekmusic-api.m336.dev/api/"
+const GM_API_URL = "https://geekmusic-api.m336.dev/api/"//https://geekmusic-api.m336.dev/api/"
 const SAVE_PATH = "./saves"
 const COBALT_URL = "https://cobalt-list.maitregeek.eu/"
 const COBALT_TOKEN = "MxcEljRTlXYkhCWVdWUk9kMkZHU2xWaVNFNWFWa1Z2ZDFSc1dsWmxiVTVHVkcxc1RtSkZXVEZXVkVadlpERlplVkp1U2xSaVZWcFlXVmQwWVdGR2JIRlNiazVxVm1zMU1GVnRNVEJW"
@@ -115,7 +115,7 @@ async function handleGeometryDashStream(songUrl) {
                     "Accept": "application/json"
                 }
             });
-        
+
             if (response.ok) {
                 return await response.blob(); // Retourne le fichier à télécharger
             } else {
@@ -125,7 +125,7 @@ async function handleGeometryDashStream(songUrl) {
             promisifiedError("Download Song Error", e);
             return songUrl;
         }
-        
+
     }
     else return songUrl
 }
@@ -154,9 +154,9 @@ async function getSongURL(songUrl) {
                 if (testIsLink.test(stream)) {
                     try {
                         new URL(stream);
-                
+
                         let response = await fetch(stream);
-                        
+
                         if (response.ok && response.body) {
                             resolve(response.body);
                         } else {
@@ -168,7 +168,7 @@ async function getSongURL(songUrl) {
                     }
                 } else {
                     resolve(stream);
-                }                
+                }
             }
         } catch (error) {
             promisifiedError("Create Song Ressource Error: ", error)
@@ -178,17 +178,17 @@ async function getSongURL(songUrl) {
 }
 
 // SAVE FUNCTION
-async function saveSong(download,title) {
+async function saveSong(download, title) {
     try {
         if (!title) title = generateFileName()
-            else title= title.replace(/[^a-zA-Z0-9_-]/g, '_');
-    let response = new Response(download)
-     // Récupère les données du stream (lecture du stream)
-     let buffer = await response.arrayBuffer();
+        else title = title.replace(/[^a-zA-Z0-9_-]/g, '_');
+        let response = new Response(download)
+        // Récupère les données du stream (lecture du stream)
+        let buffer = await response.arrayBuffer();
 
-     // Écrit les données dans un fichier avec Bun
-     await Bun.write(`${SAVE_PATH}/${title}.mp3`, new Uint8Array(buffer));
-    return true
+        // Écrit les données dans un fichier avec Bun
+        await Bun.write(`${SAVE_PATH}/${title}.mp3`, new Uint8Array(buffer));
+        return true
     }
     catch (e) {
         promisifiedError("Error while saving song", e)
@@ -216,13 +216,13 @@ async function downloadSongs(songs) {
     if (!songs) return false
 
     return (await Promise.all(songs.map(async song => {
-        if (!song?.url) return {...song, success:false}
+        if (!song?.url) return { ...song, success: false }
         song.download = await getSongURL(song.url)
-        if (!song.download) return {...song, success:false}
+        if (!song.download) return { ...song, success: false }
         song.success = await saveSong(song.download, song.title)
         return song
     })))
-} 
+}
 
 //Logs
 async function promisifiedLog(...args) {
@@ -253,6 +253,7 @@ async function date() {
 
 module.exports = {
     downloadSongs,
+    promisifiedError,
     GM_TOKEN,
     GM_API_URL
 }
